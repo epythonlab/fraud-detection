@@ -33,27 +33,20 @@ class DataPreprocessor:
     def load_dataset(self):
         """
         Loads the dataset from the specified filepath.
+
+        Returns:
+        -------
+        pd.DataFrame
+            The loaded dataset as a DataFrame.
         """
         try:
             self.data = pd.read_csv(self.filepath)
             self.logger.info("Dataset loaded successfully.")
+            return self.data
         except Exception as e:
             self.logger.error(f"Error loading dataset: {e}")
-
-    def understand_data_features(self):
-        """
-        Displays the first few rows, dataset information, and basic statistics.
-        """
-        if self.data is not None:
-            self.logger.info("Displaying dataset overview and summary statistics.")
-            print("First 5 rows of the dataset:")
-            print(self.data.head())
-            print("\nDataset Information:")
-            print(self.data.info())
-            print("\nSummary Statistics:")
-            print(self.data.describe())
-        else:
-            self.logger.warning("No dataset loaded. Please load the dataset first.")
+            return None  # Return None if there's an error loading the dataset
+        
 
     def handle_missing_values(self, strategy='drop', fill_value=None):
         """
