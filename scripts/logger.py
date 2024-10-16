@@ -1,4 +1,5 @@
 import logging
+import os
 
 class SetupLogger:
     """
@@ -12,7 +13,7 @@ class SetupLogger:
         The level of logging, default is logging.INFO.
     """
 
-    def __init__(self, log_file='app.log', log_level=logging.INFO):
+    def __init__(self, log_file='logs/app.log', log_level=logging.INFO):
         """
         Initializes the logger with a specified log file and level.
 
@@ -23,6 +24,11 @@ class SetupLogger:
         log_level : logging level, optional
             The logging level (default is logging.INFO).
         """
+        # Ensure the directory exists
+        log_dir = os.path.dirname(log_file)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(log_level)
 
