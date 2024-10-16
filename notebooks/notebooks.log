@@ -1,1 +1,4 @@
 2024-10-16 06:46:23,457 - logger - INFO - Imported necessary libraries.
+2024-10-16 07:05:02,674 - logger - ERROR - Error loading dataset: [Errno 2] No such file or directory: 'path/to/your/dataset.csv'
+2024-10-16 07:11:49,681 - logger - INFO - Dataset loaded successfully.
+2024-10-16 07:12:14,676 - logger - INFO - Dataset loaded successfully.
