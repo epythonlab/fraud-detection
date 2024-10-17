@@ -135,36 +135,36 @@ class DataVisualizer:
         """
         Plots distributions of various features by the target variable (class) in a grid layout.
         """
-        self.logger.info("Plotting multiple distributions by class.")
+        self.logger.info("Plotting categorical variables distributions by class.")
         try:
-            fig, axes = plt.subplots(3, 2, figsize=(15, 12))
-            fig.suptitle('Distributions of Various Features by Class', fontsize=16)
+            # Create a figure with two rows and three columns
+            fig, axes = plt.subplots(2, 3, figsize=(15, 8))
+            fig.suptitle('Distributions of Categorical Features by Class', fontsize=16)
             sns.set_style("whitegrid")
 
-            sns.countplot(data=self.fraud_df, x='sex', hue=self.target_col, ax=axes[0, 0], palette='viridis')
-            axes[0, 0].set_title('Sex Distribution by Class')
+            # Define the features to plot and their titles
+            features = ['sex', 'source', 'browser']
+            titles = ['Sex Distribution by Class', 'Source Distribution by Class', 'Browser Distribution by Class']
 
-            sns.histplot(data=self.fraud_df, x='age', hue=self.target_col, kde=True, bins=30, ax=axes[0, 1], palette='husl')
-            axes[0, 1].set_title('Age Distribution by Class')
+            # Loop through the features and create count plots
+            for ax, feature, title in zip(axes.flatten(), features, titles):
+                sns.countplot(data=self.fraud_df, x=feature, hue=self.target_col, ax=ax, palette='viridis' if feature == 'sex' else 'muted')
+                ax.set_title(title)
+                ax.set_xlabel(feature.capitalize())
+                ax.set_ylabel('Count')
 
-            sns.violinplot(data=self.fraud_df, x=self.target_col, y='purchase_value', hue=self.target_col, palette='coolwarm', ax=axes[1, 0])
-            axes[1, 0].set_title('Purchase Value Distribution by Class')
+            # Remove any unused axes
+            for i in range(len(features), len(axes.flatten())):
+                fig.delaxes(axes.flatten()[i])
 
-            sns.countplot(data=self.fraud_df, x='source', hue=self.target_col, ax=axes[1, 1], palette='muted')
-            axes[1, 1].set_title('Source Distribution by Class')
-
-            sns.countplot(data=self.fraud_df, x='browser', hue=self.target_col, ax=axes[2, 0], palette='deep')
-            axes[2, 0].set_title('Browser Distribution by Class')
-
-            fig.delaxes(axes[2, 1])
-
-            plt.tight_layout()
-            plt.subplots_adjust(top=0.93)
+            # Adjust layout for better spacing
+            plt.tight_layout(rect=[0, 0, 1, 0.95])  # Adjust space to accommodate the main title
             plt.show()
 
             self.logger.info("Successfully plotted multiple distributions by class.")
         except Exception as e:
             self.logger.error(f"Error in plotting multiple distributions by class: {e}")
+
             
     def plot_pairwise_relationships(self):
         """
