@@ -86,7 +86,7 @@ class GeolocationAnalyzer:
             color='fraud_rate',
             hover_name='NAME',
             hover_data=['fraud_rate', 'transaction_volume'],
-            title='Interactive Fraud Rate by Country',
+            title='Fraud Rate by Country',
             color_continuous_scale='Reds',
             projection='natural earth',
         )
@@ -106,7 +106,7 @@ class GeolocationAnalyzer:
             color='transaction_volume',
             hover_name='NAME',
             hover_data=['transaction_volume', 'fraud_rate'],
-            title='Interactive Transaction Volume by Country',
+            title='Transaction Volume by Country',
             color_continuous_scale='Blues',
             projection='natural earth',
         )
@@ -123,6 +123,6 @@ class GeolocationAnalyzer:
         self.calculate_fraud_rate()
         self.calculate_transaction_volume()
         self.merge_data()
-        self.plot_fraud_rate_map()
-        self.plot_transaction_volume_map()
+        # self.plot_fraud_rate_map()
+        # self.plot_transaction_volume_map()
         self.logger.info("Geolocation analysis completed successfully.")
