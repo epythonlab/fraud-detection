@@ -2,11 +2,13 @@ import pandas as pd
 import geopandas as gpd
 import plotly.express as px
 import logging
+import pycountry
 
 class GeolocationAnalyzer:
     def __init__(self, fraud_df: pd.DataFrame, world_gdf: gpd.GeoDataFrame, logger: logging.Logger):
         """
         Initializes the GeolocationAnalyzer class with DataFrames for fraud and world data and a logger.
+        Automatically standardizes country names and merges data.
 
         Args:
             fraud_df (pd.DataFrame): DataFrame containing fraud transaction data.
@@ -19,6 +21,26 @@ class GeolocationAnalyzer:
         self.fraud_rate_df = None
         self.transaction_volume_df = None
         self.world_fraud_map = None
+
+        # Standardize country names and merge data during initialization
+        self.standardize_country_names()
+        self.calculate_fraud_rate()
+        self.calculate_transaction_volume()
+        self.merge_data()
+
+    def standardize_country_names(self):
+        """
+        Standardizes the country names in the world GeoDataFrame to match those in the fraud dataset.
+        """
+        self.logger.info("Standardizing country names in the world GeoDataFrame.")
+        def map_country_name(name):
+            try:
+                return pycountry.countries.lookup(name).name
+            except LookupError:
+                return name  # Return the original name if no match is found
+
+        self.world_gdf['standardized_name'] = self.world_gdf['NAME'].apply(map_country_name)
+        self.logger.info("Country names standardized successfully.")
 
     def calculate_fraud_rate(self):
         """
@@ -65,7 +87,7 @@ class GeolocationAnalyzer:
         """
         self.logger.info("Merging data with world GeoDataFrame.")
         # Merge fraud rates and transaction volumes with the world GeoDataFrame
-        self.world_fraud_map = self.world_gdf.merge(self.fraud_rate_df, how='left', left_on='NAME', right_on='country')
+        self.world_fraud_map = self.world_gdf.merge(self.fraud_rate_df, how='left', left_on='standardized_name', right_on='country')
         self.world_fraud_map = self.world_fraud_map.merge(self.transaction_volume_df, how='left', on='country')
         
         # Fill missing values with 0
@@ -84,7 +106,7 @@ class GeolocationAnalyzer:
             geojson=self.world_fraud_map.geometry,
             locations=self.world_fraud_map.index,
             color='fraud_rate',
-            hover_name='NAME',
+            hover_name='standardized_name',
             hover_data=['fraud_rate', 'transaction_volume'],
             title='Fraud Rate by Country',
             color_continuous_scale='Reds',
@@ -104,7 +126,7 @@ class GeolocationAnalyzer:
             geojson=self.world_fraud_map.geometry,
             locations=self.world_fraud_map.index,
             color='transaction_volume',
-            hover_name='NAME',
+            hover_name='standardized_name',
             hover_data=['transaction_volume', 'fraud_rate'],
             title='Transaction Volume by Country',
             color_continuous_scale='Blues',
@@ -116,13 +138,9 @@ class GeolocationAnalyzer:
 
     def analyze(self):
         """
-        Executes the full geolocation analysis, including calculating fraud rates, transaction volumes,
-        merging the data, and plotting the results.
+        Executes the full geolocation analysis, including plotting the results.
         """
         self.logger.info("Starting full geolocation analysis.")
-        self.calculate_fraud_rate()
-        self.calculate_transaction_volume()
-        self.merge_data()
-        # self.plot_fraud_rate_map()
-        # self.plot_transaction_volume_map()
+        self.plot_fraud_rate_map()
+        self.plot_transaction_volume_map()
         self.logger.info("Geolocation analysis completed successfully.")
