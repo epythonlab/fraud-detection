@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-class DataPreprocessor:
+class LoadData:
     """
     A class for preprocessing a dataset, including loading, cleaning, and handling missing values.
 
