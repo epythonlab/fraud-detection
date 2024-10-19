@@ -1,6 +1,6 @@
 # Fraud Detection for E-comerce and Bank
 
-A machine learning model developed to detect anonlymous activity of e-comerce or bank transactions data-driven lending decisions
+A machine learning model developed to detect anonlymous activity of e-comerce or bank transactions data-driven decisions
 
 ## Project Directory Structure
 
