@@ -113,8 +113,9 @@ class GeolocationAnalyzer:
             projection='natural earth',
         )
         fig.update_geos(fitbounds="locations", visible=False)
-        fig.show()
+        # fig.show()
         self.logger.info("Fraud rate map plotted successfully.")
+        return fig
 
     def plot_transaction_volume_map(self):
         """
@@ -133,8 +134,9 @@ class GeolocationAnalyzer:
             projection='natural earth',
         )
         fig.update_geos(fitbounds="locations", visible=False)
-        fig.show()
+        # fig.show()
         self.logger.info("Transaction volume map plotted successfully.")
+        return fig
 
     def analyze(self):
         """
