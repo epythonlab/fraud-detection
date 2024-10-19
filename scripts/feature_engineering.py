@@ -62,9 +62,11 @@ class FeatureEngineering:
         """
         self.logging.info("Normalizing and scaling numerical features...")
         try:
+     
             numerical_features = ['purchase_value', 'user_transaction_frequency', 'device_transaction_frequency', 
                                   'user_transaction_velocity', 'hour_of_day', 'day_of_week', 'purchase_delay', 'age']
             self.df[numerical_features] = self.scaler.fit_transform(self.df[numerical_features])
+            
             self.logging.info("Numerical features normalized and scaled successfully.")
         except Exception as e:
             self.logging.error("Error in normalizing and scaling numerical features: %s", e)
@@ -78,6 +80,10 @@ class FeatureEngineering:
         try:
             categorical_features = ['source', 'browser', 'sex']
             self.df = pd.get_dummies(self.df, columns=categorical_features, drop_first=True)
+            # Convert all boolean columns to integers (1 for True, 0 for False)
+            boolean_cols = self.df.select_dtypes(include='bool').columns
+            self.df[boolean_cols] = self.df[boolean_cols].astype(int)
+            
             self.logging.info("Categorical features encoded successfully.")
         except Exception as e:
             self.logging.error("Error in encoding categorical features: %s", e)
@@ -92,13 +98,22 @@ class FeatureEngineering:
         try:
             self.preprocess_datetime()
             self.calculate_transaction_frequency()
-            self.normalize_and_scale()
             self.encode_categorical_features()
+            self.normalize_and_scale()
+            
+            # Drop the following columns
+            cols_exclude = ['signup_time', 'purchase_time', 'ip_address', 'device_id']
+            self.df.drop(columns=cols_exclude, inplace=True)
+            
+            # Set the user_id as index
+            self.df.set_index('user_id', inplace=True)
+            
             self.processed_df = self.df
             self.logging.info("Feature engineering pipeline executed successfully.")
         except Exception as e:
             self.logging.error("Error in the feature engineering pipeline: %s", e)
             raise
+
 
     def get_processed_data(self) -> pd.DataFrame:
         """
