@@ -6,10 +6,11 @@ from keras.models import Sequential
 from keras.layers import Dense, LSTM, Conv1D, Flatten, Input
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV
 import joblib
 import mlflow
 import mlflow.sklearn
+import mlflow.keras  # Importing keras logging
 import time
 
 class ModelPipeline:
@@ -85,23 +86,9 @@ class ModelPipeline:
                 ('classifier', model)
             ])
 
-            # Check the number of combinations
-            total_combinations = np.prod([len(v) for v in param_grids[name].values()])
-            
-            # Use GridSearchCV if total_combinations is small, otherwise RandomizedSearchCV
-            if total_combinations <= 5:
-                search = GridSearchCV(
+            search = GridSearchCV(
                     pipeline,
                     param_grid=param_grids[name],
-                    cv=3,
-                    scoring='accuracy',
-                    n_jobs=-1
-                )
-            else:
-                search = RandomizedSearchCV(
-                    pipeline,
-                    param_distributions=param_grids[name],
-                    n_iter=min(5, total_combinations),
                     cv=3,
                     scoring='accuracy',
                     n_jobs=-1
@@ -148,6 +135,7 @@ class ModelPipeline:
 
                 self.y_probs[name] = y_prob
 
+                # Log metrics
                 accuracy = accuracy_score(self.y_test, y_pred)
                 precision = precision_score(self.y_test, y_pred)
                 recall = recall_score(self.y_test, y_pred)
@@ -160,9 +148,25 @@ class ModelPipeline:
                 mlflow.log_metric("f1_score", f1)
                 mlflow.log_metric("roc_auc", roc_auc)
 
+                # Log hyperparameters
+                if name in ['Random Forest', 'Gradient Boosting']:
+                    # Get the best parameters from the tuned model
+                    best_params = self.models[name].get_params()
+                    for param, value in best_params.items():
+                        mlflow.log_param(param, value)
+
                 # Save the model with a sanitized name
                 model_name = name.replace(" ", "_").lower()
-                mlflow.sklearn.log_model(model, f"{model_name}_model")
+
+                # Log the model to MLflow
+                if name in ['LSTM', 'CNN']:
+                    mlflow.keras.log_model(model, f"{model_name}_model")
+                else:
+                    mlflow.sklearn.log_model(model, f"{model_name}_model")
+
+                # Register the model in the MLflow Model Registry
+                model_uri = f"runs:/{mlflow.active_run().info.run_id}/{model_name}_model"
+                mlflow.register_model(model_uri, f"{model_name}")
 
                 if roc_auc > best_score:
                     best_score = roc_auc
@@ -178,16 +182,8 @@ class ModelPipeline:
                 }
                 print(f"{name} model trained and logged with MLflow")
 
-        # if best_model is not None:
-        #     print(f"Best Model: {best_model_name} with ROC AUC: {best_score}")
-        #     with mlflow.start_run(run_name=f"Best Model - {best_model_name}"):
-        #         input_example = self.X_test.iloc[:5]
-        #         best_model_name_sanitized = best_model_name.replace(" ", "_").lower()
-        #         mlflow.sklearn.log_model(best_model, f"{best_model_name_sanitized}_best_model", input_example=input_example)
-        #         mlflow.log_metric("best_roc_auc", best_score)
-        #         mlflow.set_tag("best_model", "true")
-
         return best_model, best_model_name
+
 
     def save_best_models(self, best_model, best_model_name, dataset_name):
         """
