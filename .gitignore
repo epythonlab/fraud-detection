@@ -10,3 +10,5 @@ data/
 data.zip
 README.pdf
 logs/
+mlruns/
+*.pkl
