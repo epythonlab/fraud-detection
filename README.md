@@ -24,46 +24,34 @@ To run the project locally, follow these steps:
 
 
 
-## Installation Instructions
-
-To run the project locally, follow these steps:
-
-1. Clone the Repository:
->>>>
-    git clone https://github.com/epythonlab/fruad-detection.git`
-
-    cd fruad-detection
->>>>
-
-2. Set up the Virtual Environment:
+2. **Set up the Virtual Environment:**
 
 Create a virtual environment to manage the project's dependencies:
 
-**For Linux/MacOS**
+**For Linux/MacOS:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  
 
->>>
-    python3 -m venv .venv
-
-    source .venv/bin/activate  
->>>
 
 **For Windows:**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
 
->>>
-    python -m venv .venv
-    .venv\Scripts\activate
->>>
 
-3. Install Dependencies:
 
-Install the required Python packages by running:
->>>
-    pip install -r requirements.txt
->>>
+3. **Install Dependencies:**
+
+   Install the required Python packages by running:
+   ```bash
+   pip install -r requirements.txt
+
 
 ## Contributing
- We welcome contributions to improve the project. Please follow the steps below to contribute:
+
+We welcome contributions to improve the project. Please follow the steps below to contribute:
 
 - Fork the repository.
-- Create a new branch for your feature or bugfix.
+- Create a new branch for your feature or bug fix.
 - Submit a pull request with a detailed explanation of your changes.
