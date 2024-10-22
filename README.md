@@ -1,64 +1,60 @@
-# Fraud Detection for E-comerce and Bank
 
-A machine learning model developed to detect anonlymous activity of e-comerce or bank transactions data-driven decisions
+# Fraud Detection for E-commerce and Banking
+
+This project utilizes machine learning to detect fraudulent activity in e-commerce and banking transactions. The model facilitates data-driven decisions for enhanced security and risk management.
 
 ## Project Directory Structure
 
-The repository is organized into the following directories:
+The repository is well-organized for efficient development:
 
-`.github/workflows/`: Contains configurations for GitHub Actions, enabling continuous integration and automated testing.
+* **`.github/workflows/`**: Automates tasks like testing through GitHub Actions.
+* **`.vscode/`**: Enhances the development experience with configurations for Visual Studio Code.
+* **`app/`**: Contains the API implementation for interacting with the machine learning model via RESTful endpoints.
+* **`notebooks/`**: Jupyter notebooks are used for exploring data, feature engineering, and initial model exploration.
+* **`scripts/`**: Python scripts handle data preprocessing, feature extraction, visualization, and model implementation.
+* **`tests/`**: Unit tests ensure the model and data processing logic function correctly.
 
-`.vscode/`: Configuration files for the Visual Studio Code editor, optimizing the development environment.
+## Installation
 
-`app`: Contains the implementation of the machine learning model API, allowing interaction with the model through RESTful endpoints.
+- To run the project locally, follow these steps:
 
-`notebooks/`: Jupyter notebooks used for tasks such as data exploration, feature engineering, and preliminary modeling.
+1. **Clone the Repository:**
 
-`scripts/`: Python scripts for data preprocessing, feature extraction, visualization,  and the implementation of the machine learning model.
+   ```bash
+   git clone https://github.com/epythonlab/fraud-detection.git
+   cd fraud-detection
+   ```
 
-`tests/`: Unit tests to ensure the correctness and robustness of the implemented model and data processing logic.
+2. **Set Up the Virtual Environment**
 
+    - Create a virtual environment to manage the project's dependencies:
 
-## Installation Instructions
+    **For Linux/MacOS:**
 
-To run the project locally, follow these steps:
-
-1. Clone the Repository:
->>>>
-    git clone https://github.com/epythonlab/fruad-detection.git`
-
-    cd fruad-detection
->>>>
-
-2. Set up the Virtual Environment:
-
-Create a virtual environment to manage the project's dependencies:
-
-**For Linux/MacOS**
-
->>>
+    ```bash
     python3 -m venv .venv
+    source .venv/bin/activate
+    ```
 
-    source .venv/bin/activate  
->>>
+    **For Windows:**
 
-**For Windows:**
-
->>>
+    ```bash
     python -m venv .venv
     .venv\Scripts\activate
->>>
+    ```
 
-3. Install Dependencies:
+3. **Install Dependencies**
 
-Install the required Python packages by running:
->>>
+    - Install the required Python packages by running:
+
+    ```bash
     pip install -r requirements.txt
->>>
-
+    ```
+    
 ## Contributing
- We welcome contributions to improve the project. Please follow the steps below to contribute:
+
+We welcome contributions to improve the project. Please follow the steps below to contribute:
 
 - Fork the repository.
-- Create a new branch for your feature or bugfix.
+- Create a new branch for your feature or bug fix.
 - Submit a pull request with a detailed explanation of your changes.
