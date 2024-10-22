@@ -1,49 +1,50 @@
 # Fraud Detection for E-commerce and Banking
 
-A machine learning model developed to detect anomalous activity in e-commerce or banking transactions, facilitating data-driven decisions.
+This project utilizes machine learning to detect fraudulent activity in e-commerce and banking transactions. The model facilitates data-driven decisions for enhanced security and risk management.
 
 ## Project Directory Structure
 
-The repository is organized into the following directories:
+The repository is well-organized for efficient development:
 
-- `.github/workflows/`: Contains configurations for GitHub Actions, enabling continuous integration and automated testing.
-- `.vscode/`: Configuration files for the Visual Studio Code editor, optimizing the development environment.
-- `app/`: Contains the implementation of the machine learning model API, allowing interaction with the model through RESTful endpoints.
-- `notebooks/`: Jupyter notebooks used for tasks such as data exploration, feature engineering, and preliminary modeling.
-- `scripts/`: Python scripts for data preprocessing, feature extraction, visualization, and the implementation of the machine learning model.
-- `tests/`: Unit tests to ensure the correctness and robustness of the implemented model and data processing logic.
+* **`.github/workflows/`**: Automates tasks like testing through GitHub Actions.
+* **`.vscode/`**: Enhances the development experience with configurations for Visual Studio Code.
+* **`app/`**: Contains the API implementation for interacting with the machine learning model via RESTful endpoints.
+* **`notebooks/`**: Jupyter notebooks are used for exploring data, feature engineering, and initial model exploration.
+* **`scripts/`**: Python scripts handle data preprocessing, feature extraction, visualization, and model implementation.
+* **`tests/`**: Unit tests ensure the model and data processing logic function correctly.
 
-## Installation Instructions
+## Installation
 
 To run the project locally, follow these steps:
 
 1. **Clone the Repository:**
+
    ```bash
-   git clone https://github.com/epythonlab/fraud-detection.git
+   git clone [https://github.com/epythonlab/fraud-detection.git](https://github.com/epythonlab/fraud-detection.git)
    cd fraud-detection
 
 
 
 2. **Set up the Virtual Environment:**
 
-Create a virtual environment to manage the project's dependencies:
+    Create a virtual environment to manage the project's dependencies:
 
 **For Linux/MacOS:**
-```bash
-python3 -m venv .venv
-source .venv/bin/activate  
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate  
 
 
 **For Windows:**
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-
+    ```bash
+    python -m venv .venv
+.   venv\Scripts\activate
 
 
 3. **Install Dependencies:**
 
-   Install the required Python packages by running:
+Install the required Python packages by running:
+   
    ```bash
    pip install -r requirements.txt
 
