@@ -1,3 +1,4 @@
+
 # Fraud Detection for E-commerce and Banking
 
 This project utilizes machine learning to detect fraudulent activity in e-commerce and banking transactions. The model facilitates data-driven decisions for enhanced security and risk management.
@@ -15,42 +16,41 @@ The repository is well-organized for efficient development:
 
 ## Installation
 
-To run the project locally, follow these steps:
+- To run the project locally, follow these steps:
 
 1. **Clone the Repository:**
 
    ```bash
-   git clone [https://github.com/epythonlab/fraud-detection.git](https://github.com/epythonlab/fraud-detection.git)
+   git clone https://github.com/epythonlab/fraud-detection.git
    cd fraud-detection
-
+   ```
 
 2. **Set Up the Virtual Environment**
 
-    Create a virtual environment to manage the project's dependencies:
+    - Create a virtual environment to manage the project's dependencies:
 
     **For Linux/MacOS:**
 
-        ```bash
-        python3 -m venv .venv
-        source .venv/bin/activate
-        ```
-   
-    
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+
     **For Windows:**
 
-        ```bash
-        python -m venv .venv
-        .venv\Scripts\activate
-        
+    ```bash
+    python -m venv .venv
+    .venv\Scripts\activate
+    ```
 
 3. **Install Dependencies**
 
-    Install the required Python packages by running:
+    - Install the required Python packages by running:
 
     ```bash
     pip install -r requirements.txt
+    ```
     
-
 ## Contributing
 
 We welcome contributions to improve the project. Please follow the steps below to contribute:
