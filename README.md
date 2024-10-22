@@ -26,28 +26,31 @@ To run the project locally, follow these steps:
 
 2. **Set Up the Virtual Environment**
 
-Create a virtual environment to manage the project's dependencies:
+    Create a virtual environment to manage the project's dependencies:
 
-**For Linux/MacOS:**
-    ```bash
-    python3 -m venv .venv
-    source .venv/bin/activate  
+    **For Linux/MacOS:**
+
+        ```bash
+        python3 -m venv .venv
+        source .venv/bin/activate
+        ```
     
     
-**For Windows:**
+    
+    **For Windows:**
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-```
+        ```bash
+        python -m venv .venv
+        .venv\Scripts\activate
+        ```
 
 3. **Install Dependencies**
 
-Install the required Python packages by running:
+    Install the required Python packages by running:
 
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ## Contributing
 
