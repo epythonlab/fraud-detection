@@ -22,6 +22,7 @@ class TestFeatureEngineering(unittest.TestCase):
             'sex': ['M', 'F', 'M', 'F'],
             'age': [25, 30, 22, 35],
             'ip_address': [1234566, 68958333, 22444556, 434355],
+            'fraud_rate':[2, 5, 6, 0],
             'ip_int': [1234566, 68958333, 22444556, 434355],
             'country':['United States', 'China', 'Sudan', 'Egypt'],
             'class': [0, 1, 0, 1]
