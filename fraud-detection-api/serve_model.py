@@ -12,7 +12,7 @@ logger = SetupLogger(log_file='logs/app.log').get_logger()
 
 
 # Load the trained model
-model = joblib.load('random_forest_fraud_best_model.pkl')
+model = joblib.load('gradient_boosting_fraud_best_model.pkl')
 
 @app.route('/predict', methods=['POST'])
 def predict():
