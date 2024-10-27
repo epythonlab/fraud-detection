@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 from keras.models import Sequential
@@ -26,7 +27,7 @@ class ModelPipeline:
         self.models = {}
         self.performance_metrics = {}
         self.y_probs = {}
-        
+
     def add_models(self):
         """
         Adds selected models to the models dictionary for evaluation.
@@ -59,9 +60,47 @@ class ModelPipeline:
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
         return model
 
+    def plot_training_history(self, history, model_name="Model"):
+        """
+        Plots the training and validation loss and accuracy over epochs.
+        
+        Parameters:
+        - history: History object from model.fit(), containing training and validation metrics.
+        - model_name: Optional; Name of the model being trained, used in the plot title.
+        """
+        has_val = 'val_loss' in history.history and 'val_accuracy' in history.history
+
+        plt.figure(figsize=(14, 6))
+        
+        # Loss plot
+        plt.subplot(1, 2, 1)
+        plt.plot(history.history['loss'], label='Training Loss')
+        if has_val:
+            plt.plot(history.history['val_loss'], label='Validation Loss')
+        plt.title(f'{model_name} Loss over Epochs')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.grid(True)
+
+        # Accuracy plot (if available)
+        if 'accuracy' in history.history:
+            plt.subplot(1, 2, 2)
+            plt.plot(history.history['accuracy'], label='Training Accuracy')
+            if has_val:
+                plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+            plt.title(f'{model_name} Accuracy over Epochs')
+            plt.xlabel('Epoch')
+            plt.ylabel('Accuracy')
+            plt.legend()
+            plt.grid(True)
+        
+        plt.tight_layout()
+        plt.show()
+
     def hyperparameter_tuning(self):
         """
-        Performs hyperparameter tuning for each selected model using RandomizedSearchCV.
+        Performs hyperparameter tuning for each selected model using GridSearchCV.
         """
         param_grids = {
             'Random Forest': {
@@ -110,6 +149,10 @@ class ModelPipeline:
         best_model = None
         best_model_name = ""
         best_score = 0
+        best_accuracy = 0
+        best_f1 = 0
+        best_precision = 0
+        best_recall = 0
 
         for name, model in self.models.items():
             with mlflow.start_run(run_name=name):
@@ -119,10 +162,14 @@ class ModelPipeline:
                     X_train_reshaped = self.X_train.values.reshape(self.X_train.shape[0], self.X_train.shape[1], 1)
                     X_test_reshaped = self.X_test.values.reshape(self.X_test.shape[0], self.X_test.shape[1], 1)
 
-                    model.fit(X_train_reshaped, self.y_train, epochs=5, batch_size=32, verbose=0)
+                    # Train the model
+                    history = model.fit(X_train_reshaped, self.y_train, validation_data=(X_test_reshaped, self.y_test), epochs=5, batch_size=32, verbose=0)
                     y_prob = model.predict(X_test_reshaped)
                     y_pred = (y_prob > 0.5).astype("int32")
                     y_prob = y_prob.flatten()
+
+                    # Plot training history
+                    self.plot_training_history(history, model_name=name)
 
                 else:
                     model.fit(self.X_train, self.y_train)
@@ -150,12 +197,10 @@ class ModelPipeline:
 
                 # Log hyperparameters
                 if name in ['Random Forest', 'Gradient Boosting']:
-                    # Get the best parameters from the tuned model
                     best_params = self.models[name].get_params()
                     for param, value in best_params.items():
                         mlflow.log_param(param, value)
 
-                # Save the model with a sanitized name
                 model_name = name.replace(" ", "_").lower()
 
                 # Log the model to MLflow
@@ -168,8 +213,18 @@ class ModelPipeline:
                 model_uri = f"runs:/{mlflow.active_run().info.run_id}/{model_name}_model"
                 mlflow.register_model(model_uri, f"{model_name}")
 
-                if roc_auc > best_score:
+                # Update best model based on multiple metrics
+                if (roc_auc > best_score) or \
+                (roc_auc == best_score and accuracy > best_accuracy) or \
+                (roc_auc == best_score and accuracy == best_accuracy and f1 > best_f1) or \
+                (roc_auc == best_score and accuracy == best_accuracy and f1 == best_f1 and precision > best_precision) or \
+                (roc_auc == best_score and accuracy == best_accuracy and f1 == best_f1 and precision == best_precision and recall > best_recall):
+
                     best_score = roc_auc
+                    best_accuracy = accuracy
+                    best_f1 = f1
+                    best_precision = precision
+                    best_recall = recall
                     best_model = model
                     best_model_name = name
 
@@ -185,12 +240,13 @@ class ModelPipeline:
         return best_model, best_model_name
 
 
+
     def save_best_models(self, best_model, best_model_name, dataset_name):
         """
         Saves the best model to disk for later use.
         """
         sanitized_name = best_model_name.replace(' ', '_').lower()
-        joblib.dump(best_model, f"../app/{sanitized_name}_{dataset_name}_best_model.pkl")
+        joblib.dump(best_model, f"../fraud-detection-api/{sanitized_name}_{dataset_name}_best_model.pkl")
         print(f"{best_model_name} best model saved.")
 
     def get_results(self):

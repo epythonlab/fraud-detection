@@ -1,8 +1,8 @@
 import shap
 import joblib
-import pandas as pd
 from lime import lime_tabular
 import matplotlib.pyplot as plt
+
 shap.initjs()
 
 class ModelExplainer:
@@ -60,49 +60,31 @@ class ModelExplainer:
         """
         print("Generating SHAP explanations...")
 
-        # Create SHAP explainer
-        explainer_shap = shap.TreeExplainer(self.model)
-        shap_values = explainer_shap.shap_values(self.X_test)
-        print(shape_values)
-        # Handle binary classification case (class 1 for fraud)
-        if isinstance(shap_values, list):  # If shap_values is a list, it's for multiclass/binary classification
-            shap_values_to_use = shap_values[1]  # Class 1 (Fraud) SHAP values
-            base_value = explainer_shap.expected_value[1]  # Base value for class 1 (Fraud)
-        else:
-            shap_values_to_use = shap_values  # For models that only have one output (binary case)
-            base_value = explainer_shap.expected_value  # Base value for binary case
+        # Ensure model is correctly extracted
+        model = self.model  # This should already be the final model if initialized correctly
 
-        # Check if SHAP values and X_test have matching shapes
-        print(f"Shape of SHAP values: {shap_values_to_use.shape}")
-        print(f"Shape of X_test: {self.X_test.shape}")
+        explainer = shap.TreeExplainer(model, self.X_test)  # General Explainer for more models
+        shap_values = explainer.shap_values(self.X_test)
 
-        if shap_values_to_use.shape[0] != self.X_test.shape[0]:
-            raise ValueError(f"Shape mismatch: SHAP values have {shap_values_to_use.shape[0]} rows, "
-                            f"but X_test has {self.X_test.shape[0]} rows.")
+        # Print type and shape for debugging
+        print(f"Type of SHAP values: {type(shap_values)}")
+        print(f"Shape of SHAP values: {shap_values.shape}")
 
         # SHAP Summary Plot: Overview of important features
         plt.figure(figsize=(15, 4))
-        shap.summary_plot(shap_values_to_use, self.X_test, show=False)
+        shap.summary_plot(shap_values, self.X_test, show=False)
         plt.title('SHAP Summary Plot')
         plt.show()
 
-        # Sample only a small number of rows, such as the top 100 samples
-        sample_indices = shap_values_to_use[:100]  # Sample the top 100 SHAP values
-
-        # Choose a specific index from the subsample
-        if instance_idx >= len(sample_indices):
-            raise IndexError(f"Instance index {instance_idx} is out of bounds for the sampled data.")
-
-        # Plot SHAP force plot for the selected instance from the subsampled data
-        shap.plots.force(base_value, sample_indices[instance_idx])  # Base value and SHAP values for the selected instance
-        plt.title(f'SHAP Force Plot for Sampled Instance {instance_idx}')
-        plt.show()
-
+        # Plot SHAP force plot for the selected instance from the test data
+        # Use `shap.plots.force` correctly
+        shap.plots.force(explainer.expected_value, shap_values[instance_idx],feature_names=self.X_test.columns, matplotlib=True)
+       
+        
         # SHAP Dependence Plot: Relationship between feature and model output
-        shap.dependence_plot(self.X_test.columns[0], shap_values_to_use, self.X_test, show=False)
+        shap.dependence_plot(self.X_test.columns[0], shap_values, self.X_test, show=False)
         plt.title(f'SHAP Dependence Plot for Feature: {self.X_test.columns[0]}')
         plt.show()
-
 
 
     def explain_with_lime(self, instance_idx=0):
@@ -124,13 +106,16 @@ class ModelExplainer:
         )
 
         # Select a single instance (default: first instance)
-        instance = self.X_test.iloc[instance_idx].values
+        instance = self.X_test.iloc[instance_idx].values.flatten()  # Flatten to ensure it's 1D
+        print(f"Instance shape for LIME: {instance.shape}")
+
         explanation = explainer_lime.explain_instance(instance, self.model.predict_proba)
 
         # Display LIME Feature Importance Plot
         explanation.as_pyplot_figure()
         plt.title(f'LIME Feature Importance for Instance {instance_idx}')
         plt.show()
+
 
     def explain_model(self, instance_idx=0):
         """
