@@ -1,0 +1,4 @@
+flask
+flask-logging
+joblib
+scikit-learn==1.5.2
