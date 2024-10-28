@@ -111,7 +111,13 @@ Follow these steps to set up and run the project locally:
 - **Interactive Dashboard**:
   - Visualize fraud insights (transaction count, fraud cases, geographic data).
   - Use Dash to create charts (line, bar) and summary boxes for fraud trends.
-  - Set up a Flask endpoint to serve fraud data for the Dash frontend.
+  - Set up a Flask endpoint to serve fraud data for the Dash front end.
+    ![image](https://github.com/user-attachments/assets/6e303f9a-90be-42b9-9734-78a0f9a0c2f7)
+    ![image](https://github.com/user-attachments/assets/3eca58d5-d3ce-4654-88b9-3b6c759ef4dd)
+    ![image](https://github.com/user-attachments/assets/d9b58a11-2e3e-4986-b904-0c1189546436)
+
+
+
 
 ---
 
